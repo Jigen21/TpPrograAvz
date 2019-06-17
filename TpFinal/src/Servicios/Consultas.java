@@ -20,14 +20,16 @@ import Utilidades.UConexion;
 
 public class Consultas
 {
-	public static void Guardar(Object o)
+	public static Object Guardar(Object o) throws SQLException
 	{
 		
 		//UConexion connTraida = UConexion.getConexion();
 		Connection conn = UConexion.getConexion();
 		
+		Object id = null;
+		
 		ArrayList<Columna> columnas = new ArrayList<Columna>();
-		Field IdTraido;
+		Field IdTraido = null;
 		
 		ArrayList<Field> traidos = UBean.obtenerAtributos(o);
 		
@@ -95,15 +97,30 @@ public class Consultas
 			ps = conn.prepareStatement(sb.toString());
 			ps.execute();
 			
+			PreparedStatement ps2 = conn.prepareStatement("SELECT "
+			+ IdTraido.getName() + " FROM " + tabla.nombre() + " ORDER BY "
+					+ "" + IdTraido.getName() +
+			" DESC LIMIT 1");
+            ResultSet rs = ps2.executeQuery();
+            
+            while(rs.next()){
+                id = rs.getObject(1);
+                System.out.println(id);
+            }
 			
 			
 			
 			
-		} catch (SQLException e) {
+			
+		} catch (SQLException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+	
+		conn.close();
+		return id;
 		
 		
 		
@@ -166,7 +183,12 @@ public class Consultas
 		}
 		
 		
-		
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		
@@ -209,7 +231,12 @@ public class Consultas
 		}
 		
 		
-		
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -298,6 +325,13 @@ public class Consultas
 			
 			
 			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			conn.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
